@@ -28,10 +28,41 @@ int[][] sourceArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
             }
         }
         showArray(sourceArray,ARRAY_ROWS,ARRAY_COLUMNS);
+        //swapElemRelativeCenterCol(); //вариант 5
+        swapElemRelativeCenterRow(); // вариант 6
 
     }
-    private void someFunc(String direction){
+    private void swapElemRelativeCenterCol() {
+        // вариант 5
+        int tempVal = 0;
+        for (int i = 0; i < ARRAY_ROWS; i++) {
+            //обходим столбцы от начала до середины
+            // зеркально обходим столбцы с конца массива до середины
+            // (средний столбец не включаем)
+            for (int j = 0; j < ARRAY_COLUMNS / 2; j++) {
 
+                // меняем значения в столюцов через временную переменную
+                tempVal = sourceArray[i][j];
+                sourceArray[i][j] = sourceArray[i][ARRAY_COLUMNS - j - 1];
+                sourceArray[i][ARRAY_COLUMNS - j - 1] = tempVal;
+            }
+        }
+    }
+    private void swapElemRelativeCenterRow() {
+        // вариант 6
+        int tempVal = 0;
+        for (int i = 0; i < ARRAY_ROWS/2; i++) {
+            //обходим строки от начала до середины
+            // зеркально обходим строки с конца массива до середины
+            // (среднюю строку не включаем)
+            for (int j = 0; j < ARRAY_COLUMNS; j++) {
+
+                // меняем значения в столюцов через временную переменную
+                tempVal = sourceArray[i][j];
+                sourceArray[i][j] = sourceArray[ARRAY_ROWS-i-1][j];
+                sourceArray[ARRAY_ROWS-i-1][j] = tempVal;
+            }
+        }
     }
 
     private void showArray(int[][]array,int rowArray,int colArray){
@@ -64,10 +95,14 @@ int[][] sourceArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP,24);
 
                 //выделяем другим цветом заданный элемент
-                if(i==3 || j==3){
+               // if(j==colArray/2){ // для варианта 5
+                if(i==rowArray/2){ // для варианта 6
                     textView.setBackgroundColor(0xFF00FF00);
                     textView.setTextColor(0xFFFF0000);
                 }
+
+
+
 
 
                 textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -77,20 +112,20 @@ int[][] sourceArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
         }
     }
     public void upButtonClick(View view) {
-        someFunc("UP");
+     //   someFunc("UP");
         showArray(sourceArray,ARRAY_ROWS,ARRAY_COLUMNS);
     }
     public void downButtonClick(View view) {
-        someFunc("DOWN");
+     //   someFunc("DOWN");
         showArray(sourceArray,ARRAY_ROWS,ARRAY_COLUMNS);
     }
     public void leftButtonClick(View view) {
-        someFunc("LEFT");
+     //   someFunc("LEFT");
         showArray(sourceArray,ARRAY_ROWS,ARRAY_COLUMNS);
     }
 
     public void rightButtonClick(View view) {
-        someFunc("RIGHT");
+     //   someFunc("RIGHT");
         showArray(sourceArray,ARRAY_ROWS,ARRAY_COLUMNS);
 
     }
