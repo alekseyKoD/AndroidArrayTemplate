@@ -14,7 +14,7 @@ public class MainActivity extends AppCompatActivity {
 
 int ARRAY_ROWS = 7;
 int ARRAY_COLUMNS = 7;
-int minRandValue=1;
+int minRandValue=0;
 int maxRandValue=20;
 int[][] sourceArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
     @Override
@@ -27,6 +27,7 @@ int[][] sourceArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
                 sourceArray[i][j]= (int) (minRandValue+Math.random()*(maxRandValue-minRandValue+1));
             }
         }
+
         showArray(sourceArray,ARRAY_ROWS,ARRAY_COLUMNS);
 
     }
@@ -35,6 +36,41 @@ int[][] sourceArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
     }
 
     private void showArray(int[][]array,int rowArray,int colArray){
+
+
+
+        // переменная, в которой храним макс сумму по строкам, начальное значение равно 0, т.к
+        // это минимально возвожное значение
+        int maxSumRow=0;
+
+        // переменная, в которой храним мин сумму по столбцам, начальное значение устанавливаем макс
+        // возм.значению (макс значение случ. величины в каждом элементе в столбцах)
+        int minSumCol=maxRandValue*colArray;
+
+        int maxSumRowIndex=0; // номер строки, в которой сумма эл-том максимальна
+        int minSumColIndex=0;  // номер столбца, в которой сумма эл-том минимальна
+
+        for (int i = 0; i < rowArray; i++) {
+            int tempSumRow=0;
+            int tempSumCol=0;
+
+            for (int j = 0; j < rowArray; j++) {
+                tempSumRow+=array[i][j];  // суммируем элементы строк
+                tempSumCol+=array[j][i]; // суммируем элементы столбцов
+            }
+            if(tempSumRow>maxSumRow){
+                // если сумма элементов строки больше предыдущей, то
+                // устанавливаем новую макс сумм и обновляем индекс строки
+                maxSumRow=tempSumRow;
+                maxSumRowIndex=i;
+            }
+            if(tempSumCol<minSumCol){
+                // если сумма элементов строки меньше предыдущей, то
+                // устанавливаем новую мин. сумм и обновляем индекс столбца
+                minSumCol=tempSumCol;
+                minSumColIndex=i;
+            }
+        }
         TableLayout tableLayout = findViewById(R.id.tableLayout);
         // очищаем tablelayout от предыдущих значений
         tableLayout.removeAllViewsInLayout();
@@ -48,7 +84,6 @@ int[][] sourceArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
                             TableLayout.LayoutParams.WRAP_CONTENT,
                             Gravity.CENTER_HORIZONTAL);
             tableRow.setLayoutParams(params);
-
             // применяем параметры выравнивания и заполнения textView
             TableRow.LayoutParams textViewParams =
                     new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT,
@@ -60,11 +95,13 @@ int[][] sourceArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
                 // создаем textView, он будет выступать в роли ячейки в  строке tableRow
                 TextView textView = new TextView(this);
                 textView.setLayoutParams(textViewParams);
+                //заполняем ячейку значением из ячейки массива
                 textView.setText(String.valueOf(array[i][j]));
+
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP,24);
 
-                //выделяем другим цветом заданный элемент
-                if(i==3 || j==3){
+                //выделяем другим цветом заданный элементы, которые удовлетворяют условиям
+                if(i==maxSumRowIndex || j==minSumColIndex){
                     textView.setBackgroundColor(0xFF00FF00);
                     textView.setTextColor(0xFFFF0000);
                 }
