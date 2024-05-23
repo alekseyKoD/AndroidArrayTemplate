@@ -27,12 +27,40 @@ int[][] sourceArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
                 sourceArray[i][j]= (int) (minRandValue+Math.random()*(maxRandValue-minRandValue+1));
             }
         }
+        changeElemSideDiag();
         showArray(sourceArray,ARRAY_ROWS,ARRAY_COLUMNS);
 
     }
     private void someFunc(String direction){
 
     }
+    // функция для обмена элементов массива относительно гл. диагонали(вариант 7)
+    private void changeElemMainDiag(){
+        int tempValue;
+        for (int i = 0; i < ARRAY_ROWS; i++) {
+            for (int j = i+1; j < ARRAY_COLUMNS; j++) {
+                // элементы относительно главно диагонали обмениваются
+                // по правилу - меняем индекс столбца на индекс строки и наооборот
+                tempValue=sourceArray[i][j];
+                sourceArray[i][j]=sourceArray[j][i];
+                sourceArray[j][i]=tempValue;
+            }
+        }
+    }
+    // функция для обмена элементов массива относительно гл. диагонали(вариант 8)
+    private void changeElemSideDiag(){
+        int tempValue;
+        for (int i = 0; i < ARRAY_ROWS; i++) {
+            for (int j = 0; j < (ARRAY_COLUMNS-i-1); j++) {
+
+                tempValue=sourceArray[i][j];
+                sourceArray[i][j]=sourceArray[ARRAY_ROWS-i-1][ARRAY_COLUMNS-j-1];
+                sourceArray[ARRAY_ROWS-i-1][ARRAY_COLUMNS-j-1]=tempValue;
+            }
+        }
+    }
+
+
 
     private void showArray(int[][]array,int rowArray,int colArray){
         TableLayout tableLayout = findViewById(R.id.tableLayout);
@@ -63,12 +91,17 @@ int[][] sourceArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
                 textView.setText(String.valueOf(array[i][j]));
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP,24);
 
-                //выделяем другим цветом заданный элемент
-                if(i==3 || j==3){
+                //выделяем другим цветом элементы гл. диагонали (вариант7)
+                if(i==j){
                     textView.setBackgroundColor(0xFF00FF00);
                     textView.setTextColor(0xFFFF0000);
                 }
 
+//                //выделяем другим цветом элементы побочной диагонали (вариант8)
+//                if(i==(colArray-j-1)){
+//                    textView.setBackgroundColor(0xFF00FF00);
+//                    textView.setTextColor(0xFFFF0000);
+//                }
 
                 textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                 tableRow.addView(textView);
