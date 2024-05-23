@@ -17,6 +17,9 @@ int ARRAY_COLUMNS = 7;
 int minRandValue=1;
 int maxRandValue=20;
 int[][] sourceArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
+
+    // маcсив для обозначения элемента массива, который нужно выделить другим цветом
+int[][] markerArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,14 +28,47 @@ int[][] sourceArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
         for (int i = 0; i < ARRAY_ROWS; i++) {
             for (int j = 0; j < ARRAY_COLUMNS; j++) {
                 sourceArray[i][j]= (int) (minRandValue+Math.random()*(maxRandValue-minRandValue+1));
+
+                // зануляем массив markerArray
+                markerArray[i][j]=0;
             }
         }
+        findSeddlePoint();
         showArray(sourceArray,ARRAY_ROWS,ARRAY_COLUMNS);
 
     }
     private void someFunc(String direction){
 
     }
+    // функция для поиска в массиве седловых точек
+    // Седловая точка – элемент массива, который одновременно является
+    // минимумом в своей строке и максимумом в своем столбце
+     private void findSeddlePoint() {
+         int[] maxRowElemIndexArray=new int[ARRAY_ROWS];
+         // Алгоритм поиска: сначала проходим по массиву и находим макс. элемент в каждой строке
+         // индекс этого элемента заносим в новый одномерный массив.
+         // затем делаем второй проход и ищем минимальный элемент в столбце и запоминаем его индекс
+         // сравниваем этот индексами строк и если есть совпадение, значит мы нашли седловоцй элемент
+         // помечаем это элемент в массиве markerArray( устанавл 1 в элемент с соотв индексами)
+
+         int maxRowElem;
+         int maxRowElemIndex;
+         for (int i = 0; i < ARRAY_ROWS; i++) {
+             maxRowElem=0;
+             maxRowElemIndex=0;
+             for (int j = 0; j < ARRAY_COLUMNS; j++) {
+                if(sourceArray[i][j]>maxRowElem){
+                    // нашли новый макс элемент в строке
+                    maxRowElem=sourceArray[i][j];
+                    maxRowElemIndex=j;
+                }
+             }
+             maxRowElemIndexArray[i]=maxRowElemIndex;
+         }
+
+
+     }
+
 
     private void showArray(int[][]array,int rowArray,int colArray){
         TableLayout tableLayout = findViewById(R.id.tableLayout);
