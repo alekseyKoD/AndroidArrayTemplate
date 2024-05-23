@@ -15,8 +15,11 @@ public class MainActivity extends AppCompatActivity {
 int ARRAY_ROWS = 7;
 int ARRAY_COLUMNS = 7;
 int minRandValue=1;
-int maxRandValue=20;
+int maxRandValue=40;
 int[][] sourceArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
+
+    // маcсив для обозначения элемента массива, который нужно выделить другим цветом
+int[][] markerArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,14 +28,42 @@ int[][] sourceArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
         for (int i = 0; i < ARRAY_ROWS; i++) {
             for (int j = 0; j < ARRAY_COLUMNS; j++) {
                 sourceArray[i][j]= (int) (minRandValue+Math.random()*(maxRandValue-minRandValue+1));
+
+                // зануляем массив markerArray
+                markerArray[i][j]=0;
             }
         }
+        findSimpleNumber();
         showArray(sourceArray,ARRAY_ROWS,ARRAY_COLUMNS);
 
     }
     private void someFunc(String direction){
 
     }
+    boolean isSimple(int number) {
+        if (number < 2)
+            return false;
+        for (int i = 2; i <= Math.sqrt(number); i++) {
+            if (number % i == 0)
+                return false;
+        }
+        return true;
+    }
+
+     private void findSimpleNumber() {
+
+        for (int i = 0; i <ARRAY_ROWS ; i++) {
+             for(int j=0;j<ARRAY_COLUMNS; j++){
+                if(isSimple(sourceArray[i][j]) ){
+                    markerArray[i][j]=1;
+                 }
+
+             }
+
+         }
+
+
+     }
 
     private void showArray(int[][]array,int rowArray,int colArray){
         TableLayout tableLayout = findViewById(R.id.tableLayout);
@@ -63,8 +94,9 @@ int[][] sourceArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
                 textView.setText(String.valueOf(array[i][j]));
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP,24);
 
-                //выделяем другим цветом заданный элемент
-                if(i==3 || j==3){
+                //выделяем другим цветом заданный элемент который промаркирован
+                // в массиве markerArray
+                if(markerArray[i][j]==1){
                     textView.setBackgroundColor(0xFF00FF00);
                     textView.setTextColor(0xFFFF0000);
                 }
