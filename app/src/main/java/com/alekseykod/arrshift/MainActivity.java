@@ -15,8 +15,12 @@ public class MainActivity extends AppCompatActivity {
 int ARRAY_ROWS = 7;
 int ARRAY_COLUMNS = 7;
 int minRandValue=1;
-int maxRandValue=20;
+int maxRandValue=30;
 int[][] sourceArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
+
+    // маcсив для обозначения элемента массива, который нужно выделить другим цветом
+int[][] markerArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
+int[] elemCounter=new int[maxRandValue];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,14 +29,45 @@ int[][] sourceArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
         for (int i = 0; i < ARRAY_ROWS; i++) {
             for (int j = 0; j < ARRAY_COLUMNS; j++) {
                 sourceArray[i][j]= (int) (minRandValue+Math.random()*(maxRandValue-minRandValue+1));
+
+                // зануляем массив markerArray
+                markerArray[i][j]=0;
             }
         }
+        findPairElement();
         showArray(sourceArray,ARRAY_ROWS,ARRAY_COLUMNS);
 
     }
     private void someFunc(String direction){
 
     }
+    private void findPairElement(){
+        // функция ищет парные элементы в массиве
+        // первым этапом обойдем массив и определим скалько раз встречается каждый элемент
+        // для этого создадим новый одномерный массив elemCounter, в элементы которого
+        // будут являться счетчиком сколько раз встречается элемент массива sourceArraу,
+        // который является индексом массива elemCounter
+        for (int i = 0; i <ARRAY_ROWS ; i++) {
+            for (int j = 0; j < ARRAY_COLUMNS; j++) {
+                elemCounter[sourceArray[i][j]-1]+=1;
+            }
+        }
+        // обходим второй раз массив sourceArray и проверяем,
+        // встречается ли элемент массива четное количестов раз (парный элемент)
+        // для этого просто проверяем элемент массива elemCounter,
+        // индексом которого является элемент массива sourceArray, на четность
+        for (int i = 0; i <ARRAY_ROWS ; i++) {
+            for (int j = 0; j < ARRAY_COLUMNS; j++) {
+                if(elemCounter[sourceArray[i][j]-1]%2==0){
+                    markerArray[i][j]=1;
+                }
+            }
+        }
+
+
+
+     }
+
 
     private void showArray(int[][]array,int rowArray,int colArray){
         TableLayout tableLayout = findViewById(R.id.tableLayout);
@@ -64,7 +99,7 @@ int[][] sourceArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP,24);
 
                 //выделяем другим цветом заданный элемент
-                if(i==3 || j==3){
+                if(markerArray[i][j]==1){
                     textView.setBackgroundColor(0xFF00FF00);
                     textView.setTextColor(0xFFFF0000);
                 }
