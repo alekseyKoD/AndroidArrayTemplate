@@ -15,7 +15,7 @@ public class MainActivity extends AppCompatActivity {
 int ARRAY_ROWS = 7;
 int ARRAY_COLUMNS = 7;
 int minRandValue=1;
-int maxRandValue=20;
+int maxRandValue=5;
 int[][] sourceArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
 
     // маcсив для обозначения элемента массива, который нужно выделить другим цветом
@@ -33,7 +33,8 @@ int[][] markerArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
                 markerArray[i][j]=0;
             }
         }
-        findSeddlePoint();
+        findSeddlePoint(); // вариант 9
+        findInvertSeddlePoint();  // вариант 10
         showArray(sourceArray,ARRAY_ROWS,ARRAY_COLUMNS);
 
     }
@@ -44,30 +45,117 @@ int[][] markerArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
     // Седловая точка – элемент массива, который одновременно является
     // минимумом в своей строке и максимумом в своем столбце
      private void findSeddlePoint() {
-         int[] maxRowElemIndexArray=new int[ARRAY_ROWS];
-         // Алгоритм поиска: сначала проходим по массиву и находим макс. элемент в каждой строке
-         // индекс этого элемента заносим в новый одномерный массив.
-         // затем делаем второй проход и ищем минимальный элемент в столбце и запоминаем его индекс
-         // сравниваем этот индексами строк и если есть совпадение, значит мы нашли седловоцй элемент
-         // помечаем это элемент в массиве markerArray( устанавл 1 в элемент с соотв индексами)
+         int[] minElemInRow=new int[ARRAY_ROWS];
+         int[] maxElemInCol=new int[ARRAY_COLUMNS];
 
-         int maxRowElem;
-         int maxRowElemIndex;
+         // массив для тестов, седловые точки - элементы массива
+         sourceArray= new int[][]{
+                 {3,4,5,3,6,7,3},
+                 {1,6,2,2,1,6,2},
+                 {0,1,4,1,3,3,1},
+                 {3,5,4,3,4,3,3},
+                 {2,4,5,2,3,6,2},
+                 {1,3,4,1,5,4,2},
+                 {3,5,4,3,4,7,3}
+                };
+
+
+         // Алгоритм поиска: нам необходимо найти максимальный элемент в строке и минимальнй элемент в столбце
+         // занести их в 2 одномернх массива: 1-ый массив  содержит макс элемент каждой строки
+         // 2-ой массив содержит мин. элемент столбца.
+         // После нахождения этих элементов делаем еще раз обход массива и каждый элемент массива
+         // с сравниваем с элементвами соответствующими элементами в массивах с макс эл-ми в строке и мин в столбце
+         // если они совпадают, значит мы нашли седловой элемент
+
+         int tempMinElemInRow;
+         int tempMaxElemInCol;
+
          for (int i = 0; i < ARRAY_ROWS; i++) {
-             maxRowElem=0;
-             maxRowElemIndex=0;
+             tempMinElemInRow=Integer.MAX_VALUE;
+             tempMaxElemInCol=Integer.MIN_VALUE;
              for (int j = 0; j < ARRAY_COLUMNS; j++) {
-                if(sourceArray[i][j]>maxRowElem){
-                    // нашли новый макс элемент в строке
-                    maxRowElem=sourceArray[i][j];
-                    maxRowElemIndex=j;
-                }
+                 // ищем макс элемент в строке
+                 if(sourceArray[i][j]<tempMinElemInRow){
+                     // нашли новый макс элемент в строке
+                     tempMinElemInRow=sourceArray[i][j];
+                 }
+                 // ищем мин элемент в столбце
+                 if(sourceArray[j][i]>tempMaxElemInCol){
+                     // нашли новый мин элемент в столбце
+                     tempMaxElemInCol=sourceArray[j][i];
+                 }
              }
-             maxRowElemIndexArray[i]=maxRowElemIndex;
+             minElemInRow[i]=tempMinElemInRow;
+             maxElemInCol[i]=tempMaxElemInCol;
          }
+         for (int i = 0; i < ARRAY_ROWS; i++) {
+             for (int j = 0; j < ARRAY_ROWS; j++) {
+                 if (sourceArray[i][j]==minElemInRow[i] &&
+                         sourceArray[i][j]==maxElemInCol[j]){
+                     markerArray[i][j]=1;
+                 }
 
+             }
 
+         }
      }
+    // функция для поиска в массиве обр. седловых точек
+    // Обр. Седловая точка – элемент массива, который одновременно является
+    // максимумом в своей строке и минимумом в своем столбце
+    private void findInvertSeddlePoint() {
+        int[] maxElemInRow=new int[ARRAY_ROWS];
+        int[] minElemInCol=new int[ARRAY_COLUMNS];
+
+        // массив для тестов, обр.седловые точки - элементы массива [1,2]=4,[1,6]=4,[4,2]=4
+        sourceArray= new int[][]{
+                {5,2,5,4,3,8,6},
+                {2,3,4,0,3,4,2},
+                {0,3,5,3,4,7,6},
+                {7,4,5,4,6,6,7},
+                {3,4,4,2,3,4,1},
+                {3,4,5,6,5,5,5},
+                {8,0,5,4,2,4,4}
+        };
+
+        // Алгоритм поиска: нам необходимо найти максимальный элемент в строке и минимальнй элемент в столбце
+        // занести их в 2 одномернх массива: 1-ый массив  содержит макс элемент каждой строки
+        // 2-ой массив содержит мин. элемент столбца.
+        // После нахождения этих элементов делаем еще раз обход массива и каждый элемент массива
+        // с сравниваем с элементвами соответствующими элементами в массивах с макс эл-ми в строке и мин в столбце
+        // если они совпадают, значит мы нашли седловой элемент
+
+        int tempMaxElemInRow;
+        int tempMinElemInCol;
+
+        for (int i = 0; i < ARRAY_ROWS; i++) {
+            tempMaxElemInRow=Integer.MIN_VALUE;
+            tempMinElemInCol=Integer.MAX_VALUE;
+            for (int j = 0; j < ARRAY_COLUMNS; j++) {
+                // ищем макс элемент в строке
+                if(sourceArray[i][j]>tempMaxElemInRow){
+                    // нашли новый макс элемент в строке
+                    tempMaxElemInRow=sourceArray[i][j];
+                }
+                // ищем мин элемент в столбце
+                if(sourceArray[j][i]<tempMinElemInCol){
+                    // нашли новый мин элемент в столбце
+                    tempMinElemInCol=sourceArray[j][i];
+                }
+            }
+            maxElemInRow[i]=tempMaxElemInRow;
+            minElemInCol[i]=tempMinElemInCol;
+        }
+        for (int i = 0; i < ARRAY_ROWS; i++) {
+            for (int j = 0; j < ARRAY_ROWS; j++) {
+                if (sourceArray[i][j]==maxElemInRow[i] &&
+                        sourceArray[i][j]==minElemInCol[j]){
+                    markerArray[i][j]=1;
+                }
+
+            }
+
+        }
+    }
 
 
     private void showArray(int[][]array,int rowArray,int colArray){
@@ -99,8 +187,9 @@ int[][] markerArray=new int[ARRAY_ROWS][ARRAY_COLUMNS];
                 textView.setText(String.valueOf(array[i][j]));
                 textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP,24);
 
-                //выделяем другим цветом заданный элемент
-                if(i==3 || j==3){
+                //выделяем другим цветом элемент, который промаркирован
+                // в массиве markerArray
+                if(markerArray[i][j]==1){
                     textView.setBackgroundColor(0xFF00FF00);
                     textView.setTextColor(0xFFFF0000);
                 }
